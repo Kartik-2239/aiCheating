@@ -1,11 +1,13 @@
-
 import { useRef, useState } from 'react';
 import './settings.css';
 import '../index.css';
 
+import HandleDrag from './dragBall/handleDrag';
+
 export default function Settings() {
   const [apiKey, setApiKey] = useState('');
   const inputkeyRef = useRef('')
+
   return (
     <div className="body">
       <div className="settings-box">
@@ -15,10 +17,11 @@ export default function Settings() {
           <label>Gemini Api Key:</label>
             <input
                 className='apikey-input'
-                type="text"
+                type="password"
                 ref={inputkeyRef}
                 value={apiKey}
                 maxLength={39}
+                
 
                 onChange={(e) => {
                     setApiKey(e.target.value);
@@ -53,6 +56,10 @@ export default function Settings() {
             </div>
         </div>
       </div>
+
+      {/* <div className='settings-box'>
+        <HandleDrag/>
+      </div> */}
     </div>
   );
 }

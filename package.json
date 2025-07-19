@@ -1,39 +1,28 @@
 {
-  "name": "ai-for-cheating",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "main": "Electron/main.js",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "electron": "electron .",
-    "start": "vite & electron ."
+"name": "ai-cheating",
+"version": "1.0.0",
+"main": "Electron/main.js",
+"type":"module",
+"scripts": {
+  "dev": "vite",             
+  "start": "electron .",
+  "build": "vite build && electron-builder"
+},
+"build": {
+  "appId": "com.kartik.AiCheating",
+  "productName": "AiCheating",
+  "files": [
+    "Electron/**/*",
+    "dist/**/*",
+    "node_modules/**/*"
+  ],
+  "directories": {
+    "buildResources": "Electron/assets" 
   },
-  "dependencies": {
-    "@google/genai": "^1.7.0",
-    "electron-store": "^10.1.0",
-    "highlight.js": "^11.11.1",
-    "highlightjs-line-numbers.js": "^2.9.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-router-dom": "^7.6.3",
-    "react-syntax-highlighter": "^15.6.1",
-    "tesseract.js": "^6.0.1"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.29.0",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
-    "@vitejs/plugin-react": "^4.5.2",
-    "electron": "^37.1.0",
-    "electron-builder": "^26.0.12",
-    "electron-is-dev": "^3.0.1",
-    "electron-reload": "^2.0.0-alpha.1",
-    "eslint": "^9.29.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
-    "globals": "^16.2.0",
-    "vite": "^7.0.0"
-  }
+  "icon": "Electron/assets/icon"
+},
+"devDependencies": {
+  "electron": "^29.0.0",
+  "electron-builder": "^24.0.0"
+}
 }

@@ -4,10 +4,12 @@ import url from 'url'
 import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
 import { ansHandler } from './ipchandlers/ansHandler.js'
-import registerShortcuts from './moveWindow.js'
+import registerArrowShortcuts from './moveWindow.js'
 import { globalShortcut } from "electron";
 import setShortcut from './shortcuts.js';
+import apiKeyHandler from './ipchandlers/keyStorage.js';
 import Store from 'electron-store';
+
 
 // 👇 simulate __dirname in ES module
 const require = createRequire(import.meta.url);
@@ -16,7 +18,9 @@ const __dirname = path.dirname(__filename);
 
 const width = 450
 const gap = 45
+let isRecordable = true
 const store = new Store();
+
 
 let mainWin;
 let settingWin;
@@ -40,7 +44,7 @@ const createWindow = () => {
   mainWin.loadFile(path.join(__dirname, 'mainBarUi/mainbar.html'))
   mainWin.setAlwaysOnTop(true,'screen-saver')
   mainWin.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
-  mainWin.setContentProtection(true)
+  mainWin.setContentProtection(false)
 
 
   mainWin.once('ready-to-show',()=>{
@@ -49,51 +53,43 @@ const createWindow = () => {
     mainWin.setPosition(side,200)
   })
 
-  const store = new Store()
-  ipcMain.on('share-apikey', (event,key) => {
-    store.set('gemini.key', key);
-  })
-
-  ipcMain.handle('get-api-key', ()=>{
-    return store.get('gemini.key')
-  })
+  //Set Storage Of Api Keys
+  apiKeyHandler()
 
   
   setShortcut('CommandOrControl+Enter',()=>{
     if (win && !win.isDestroyed()){
-      win.destroy()
+      win.close()
     }
   },ansWindow,()=>ansHandler(store.get('gemini.key'))) //Ask ai for question
 
-
   ipcMain.on('ans-btn',()=>{
-    ()=>ansHandler(store.get('gemini.key'))
     if (win && !win.isDestroyed()){
-      win.destroy()
+      win.close()
+    }else{
+      ansWindow()
+      ansHandler(store.get('gemini.key'))
     }
-    ansWindow()
+    
   })
 
   setShortcut('CommandOrControl+O',()=>{
     if (settingWin && !settingWin.isDestroyed()){
-      settingWin.destroy()
+      settingWin.close()
     }
     else{
       createSettingWin()
     }
   })
-
   ipcMain.on('setting-btn',()=>{
     if (settingWin && !settingWin.isDestroyed()){
-      settingWin.destroy()
+      settingWin.close()
     }
     else{
       createSettingWin()
     }
   })
-
-
-  setShortcut('CommandOrControl+/',()=>{ //Toggle visibility
+  setShortcut('CommandOrControl+\\',()=>{ //Toggle visibility
     if (mainWin.isVisible()){
       mainWin.hide()
       try{win.hide()
@@ -111,7 +107,7 @@ const createWindow = () => {
       }catch{}
     }
   })
-  registerShortcuts(mainWin)
+  registerArrowShortcuts(mainWin)
 }
 let win;
 const ansWindow =async()=>{
@@ -137,15 +133,18 @@ const ansWindow =async()=>{
   
   const [mainX, mainY] = mainWin.getPosition();
   win.setPosition(mainX, mainY + gap)
-  win.setContentProtection(true)
+  win.setContentProtection(false)
   win.setAlwaysOnTop(true,'screen-saver')
   win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
   
-  mainWin.on('move', () => {
+  if (win && !win.isDestroyed()){
+    mainWin.on('move',()=>{
       const [mainX, mainY] = mainWin.getPosition();
-      win.setPosition(mainX, mainY + gap);
-  });
-
+      win.setPosition(mainX, mainY + gap)
+    })
+  }
+  
+  
 
   win.on('ready-to-show',()=>{
     const [mainX, mainY] = mainWin.getPosition();
@@ -193,7 +192,7 @@ const createSettingWin = ()=>{
   
   const [mainX, mainY] = mainWin.getPosition();
   settingWin.setPosition(mainX, mainY + gap)
-  settingWin.setContentProtection(true)
+  settingWin.setContentProtection(false)
   settingWin.setAlwaysOnTop(true,'screen-saver')
   settingWin.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
 
@@ -213,4 +212,11 @@ const createSettingWin = ()=>{
 
 app.whenReady().then(() => {
   createWindow();
+  ipcMain.on('close-btn',()=>{
+    app.quit()
+  })
+
+  setShortcut('CommandOrControl+Shift+V',()=>{
+    isRecordable = false
+  })
 });

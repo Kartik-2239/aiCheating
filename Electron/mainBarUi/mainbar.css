@@ -17,8 +17,9 @@ body {
   display: flex;
   align-items: center;      /* Vertically center everything */
   justify-content: space-between;
-  padding: 0 12px;
+  padding: 0 6px;
   box-sizing: border-box;
+  gap: 10px;
 }
 
 .bar p {
@@ -37,4 +38,22 @@ body {
 
 .icon:hover{
   background-color: hsl(0, 0%, 48%, 0.7);
+}
+
+p{
+  scale: 1.7;
+  color: rgb(255, 255, 255);
+  user-select: none;
+  margin-bottom: 15px;
+  border-radius: 5px;
+}
+
+.cross-box{
+  padding: 5px;
+  border-radius: 5px;
+  width: 15px;
+}
+
+#setting-btn{
+  right: 45px;
 }

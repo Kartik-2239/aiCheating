@@ -1,26 +1,26 @@
 import { globalShortcut } from "electron";
 
-export default function registerShortcuts(window) {
+export default function registerArrowShortcuts(window) {
     
     const pixelDistanceHorizontal = 75
     const pixelDistanceVertical = 50
 
-    globalShortcut.register('CommandOrControl+Left', () => {
+    globalShortcut.register('Alt+Left', () => {
         const [x, y] = window.getPosition();
         window.setPosition(x - pixelDistanceHorizontal, y)
     });
 
-    globalShortcut.register('CommandOrControl+Right', () => {
+    globalShortcut.register('Alt+Right', () => {
         const [x, y] = window.getPosition();
         window.setPosition(x + pixelDistanceHorizontal, y)
     });
 
-    globalShortcut.register('CommandOrControl+Up', () => {
+    globalShortcut.register('Alt+Up', () => {
         const [x, y] = window.getPosition();
         window.setPosition(x, y - pixelDistanceVertical)
     });
 
-    globalShortcut.register('CommandOrControl+Down', () => {
+    globalShortcut.register('Alt+Down', () => {
         const [x, y] = window.getPosition();
         window.setPosition(x, y + pixelDistanceVertical)
     });
